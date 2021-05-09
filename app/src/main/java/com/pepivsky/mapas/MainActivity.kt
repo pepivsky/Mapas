@@ -1,7 +1,10 @@
 package com.pepivsky.mapas
 
+import android.content.Context
+import android.location.Geocoder
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import android.util.Log
 import androidx.fragment.app.Fragment
 import com.google.android.gms.maps.CameraUpdateFactory
 import com.google.android.gms.maps.GoogleMap
@@ -9,6 +12,7 @@ import com.google.android.gms.maps.OnMapReadyCallback
 import com.google.android.gms.maps.SupportMapFragment
 import com.google.android.gms.maps.model.LatLng
 import com.google.android.gms.maps.model.MarkerOptions
+import kotlin.math.log2
 
 class MainActivity : AppCompatActivity(), OnMapReadyCallback { //heredar de onMapReadyCallback
 
@@ -19,6 +23,13 @@ class MainActivity : AppCompatActivity(), OnMapReadyCallback { //heredar de onMa
         setContentView(R.layout.activity_main)
 
         createFragment()
+
+
+        /*val address = "Francisco I Madero 135, Manzana 4, 42760 Atengo, Hgo."
+
+        val latLng = getLocationByAddress(this, address)
+        Log.i("latlong", "oncreate latLong:$latLng")*/
+
     }
 
     private fun createFragment() { //metodo que crea el fragment con el mapa
@@ -45,5 +56,17 @@ class MainActivity : AppCompatActivity(), OnMapReadyCallback { //heredar de onMa
             400,
             null
         )
+    }
+
+    fun getLocationByAddress(context: Context, strAddress: String?): LatLng? { //recibe maximo 5 argumentos para obtener la latitud y longitud
+        val coder = Geocoder(context)
+        try {
+            val address = coder.getFromLocationName(strAddress, 5) ?: return null
+            val location = address.first()
+            return LatLng(location.latitude, location.longitude)
+        } catch (e: Exception) {
+            Log.e("bad address", "algo salio mal")
+        }
+        return null
     }
 }
