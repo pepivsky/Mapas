@@ -1,14 +1,21 @@
 package com.pepivsky.mapas.fragment
 
+import android.Manifest
 import android.content.Context
+import android.content.pm.PackageManager
 import android.location.Geocoder
+import android.location.LocationManager
 import android.os.Bundle
 import android.util.Log
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Toast
+import androidx.core.app.ActivityCompat
 import androidx.core.graphics.drawable.toBitmap
+import com.google.android.gms.location.FusedLocationProviderClient
+import com.google.android.gms.location.LocationServices
 import com.google.android.gms.maps.CameraUpdateFactory
 import com.google.android.gms.maps.GoogleMap
 import com.google.android.gms.maps.OnMapReadyCallback
@@ -16,6 +23,7 @@ import com.google.android.gms.maps.SupportMapFragment
 import com.google.android.gms.maps.model.BitmapDescriptorFactory
 import com.google.android.gms.maps.model.LatLng
 import com.google.android.gms.maps.model.MarkerOptions
+import com.pepivsky.mapas.MainActivity
 import com.pepivsky.mapas.R
 
 // TODO: Rename parameter arguments, choose names that match
@@ -32,9 +40,13 @@ class MainFragment : Fragment(), OnMapReadyCallback {
 
     private lateinit var map: GoogleMap
 
+    lateinit var fusedLocationProviderClient: FusedLocationProviderClient
+
     // TODO: Rename and change types of parameters
     private var param1: String? = null
     private var param2: String? = null
+
+
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -42,6 +54,9 @@ class MainFragment : Fragment(), OnMapReadyCallback {
             param1 = it.getString(ARG_PARAM1)
             param2 = it.getString(ARG_PARAM2)
         }
+
+
+
     }
 
     override fun onCreateView(
@@ -61,8 +76,13 @@ class MainFragment : Fragment(), OnMapReadyCallback {
         val address = "Calle 30A ##82a-26, Medellín, Antioquia, Colombia"
         //6.232871692486546, -75.60390812744913
 
-        val latLng = activity?.baseContext?.let { getLocationByAddress(it, address) }
-        Log.i("latlong", "oncreate latLong:$latLng")
+        //val latLng = activity?.baseContext?.let { getLocationByAddress(it, address) }
+        //Log.i("latlong", "oncreate latLong:$latLng")
+
+        fusedLocationProviderClient = LocationServices.getFusedLocationProviderClient(requireActivity())
+
+
+
     }
 
 
@@ -76,15 +96,22 @@ class MainFragment : Fragment(), OnMapReadyCallback {
     override fun onMapReady(googleMap: GoogleMap) { //cuando el mapa es creado lo guardamos en la variable map
         map = googleMap
         //cuando el mapa esta listo creamos el marcador
-        createMarker()
+        //map.isMyLocationEnabled
+
+        getcurrentLocation()
+
+        //createMarker()
     }
 
-    private fun createMarker() {
+
+
+
+    private fun createMarker(latitude: Double = 28.043893, longitude: Double = -16.539329) {
         // objeto para crear un bitmap a partir de un drawable
         val pickupMarkerDrawable = resources.getDrawable(R.drawable.ic_android,null)
 
         //cordenadas del punto para crear el marcador en el mapa
-        val coordinates = LatLng(28.043893, -16.539329) //recibe dos double
+        val coordinates = LatLng(latitude, longitude) //recibe dos double
         val marker = MarkerOptions()
             .position(coordinates)
             .title("Mi playa fav")
@@ -109,5 +136,43 @@ class MainFragment : Fragment(), OnMapReadyCallback {
             Log.e("bad address", "algo salio mal")
         }
         return null
+    }
+
+    fun getcurrentLocation() {
+
+        val task = fusedLocationProviderClient.lastLocation
+
+        if (ActivityCompat.checkSelfPermission(
+                requireContext(),
+                Manifest.permission.ACCESS_FINE_LOCATION
+            ) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(
+                requireContext(),
+                Manifest.permission.ACCESS_COARSE_LOCATION
+            ) != PackageManager.PERMISSION_GRANTED
+        ) {
+            // TODO: Consider calling
+            //    ActivityCompat#requestPermissions
+            // here to request the missing permissions, and then overriding
+            //   public void onRequestPermissionsResult(int requestCode, String[] permissions,
+            //                                          int[] grantResults)
+            // to handle the case where the user grants the permission. See the documentation
+            // for ActivityCompat#requestPermissions for more details.
+            return
+        }
+
+        task.addOnSuccessListener {
+            if (it != null) {
+                val latitude = it.latitude
+                val longitude = it.longitude
+                Log.i("MainFragment", "lattitude $latitude longitude $longitude")
+                createMarker(latitude, longitude)
+            } else {
+                Log.i("MainFragment", "null")
+
+            }
+        }
+
+
+
     }
 }

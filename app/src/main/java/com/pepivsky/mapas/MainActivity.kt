@@ -1,11 +1,13 @@
 package com.pepivsky.mapas
 
+import android.content.ContentProviderClient
 import android.content.Context
 import android.location.Geocoder
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.util.Log
 import androidx.fragment.app.Fragment
+import com.google.android.gms.location.FusedLocationProviderClient
 import com.google.android.gms.maps.CameraUpdateFactory
 import com.google.android.gms.maps.GoogleMap
 import com.google.android.gms.maps.OnMapReadyCallback
@@ -17,6 +19,8 @@ import kotlin.math.log2
 class MainActivity : AppCompatActivity(), OnMapReadyCallback { //heredar de onMapReadyCallback
 
     private lateinit var map: GoogleMap
+
+   //private lateinit var fusedLocationClient: FusedLocationProviderClient
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
