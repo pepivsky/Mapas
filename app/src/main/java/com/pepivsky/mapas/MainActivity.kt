@@ -14,9 +14,45 @@ import com.google.android.gms.maps.OnMapReadyCallback
 import com.google.android.gms.maps.SupportMapFragment
 import com.google.android.gms.maps.model.LatLng
 import com.google.android.gms.maps.model.MarkerOptions
+import okhttp3.OkHttpClient
+import okhttp3.logging.HttpLoggingInterceptor
+import retrofit2.Retrofit
+import retrofit2.converter.gson.GsonConverterFactory
+import java.util.concurrent.TimeUnit
 import kotlin.math.log2
 
 class MainActivity : AppCompatActivity(), OnMapReadyCallback { //heredar de onMapReadyCallback
+
+    companion object {
+        fun getRetrofit(): Retrofit {
+            //val baseURL = "http://3.219.19.170:3000/"
+            val baseURL = "https://backclient.notariapp.online/"
+
+            // https://backclient.notariapp.online/
+            //http://3.219.19.170:3000/register/sendsms/phonecode
+
+            //objeto logger
+            val logger = HttpLoggingInterceptor().setLevel(HttpLoggingInterceptor.Level.BODY)
+
+            //HTTP client
+            val client = OkHttpClient.Builder()
+                .addInterceptor(logger)
+                // evitar el socket time out exception
+                .connectTimeout(1, TimeUnit.MINUTES)
+                .writeTimeout(1, TimeUnit.MINUTES) // write timeout
+                .readTimeout(1, TimeUnit.MINUTES) // read timeout
+
+            //objeto builder
+            val builder = Retrofit.Builder().baseUrl(baseURL)
+                .addConverterFactory(GsonConverterFactory.create())
+                //agregando el cliente http
+                .client(client.build())
+            val retrofit = builder.build()
+
+            //objeto retrofit
+            return retrofit
+        }
+    }
 
     private lateinit var map: GoogleMap
 
