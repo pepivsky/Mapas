@@ -142,7 +142,13 @@ class MainFragment : Fragment(), OnMapReadyCallback {
                     response: Response<GetNotariesResponse>
             ) {
                 if (response.isSuccessful) {
+                    Log.i(TAG, "Exito!")
                     val list = response.body()
+                    if (list != null) {
+                        listaNotarias.addAll(list.toMutableList())
+                        createFragment()
+                    }
+
 
                     Toast.makeText(context, "lista $list", Toast.LENGTH_SHORT).show()
                 }
@@ -171,15 +177,15 @@ class MainFragment : Fragment(), OnMapReadyCallback {
         //map.isMyLocationEnabled
 
         try {
-            /*val notariItem = listaNotarias.first()
+            val notariItem = listaNotarias.first()
             val name = notariItem?.name
             val notariaLat = notariItem?.latitude
-            val notariaLong = notariItem?.longitude*/
+            val notariaLong = notariItem?.longitude
 
-            //Log.d(TAG, "onMapReady $notariItem")
+            Log.d(TAG, "onMapReady $notariItem")
 
 
-            //createMarker(notariaLat, notariaLong, name)
+            createMarker(notariaLat, notariaLong, name)
             //createMarker()
         }catch (e: Exception) {
             Log.d(TAG, "e:${e.message}")
@@ -197,13 +203,13 @@ class MainFragment : Fragment(), OnMapReadyCallback {
         val coordinates = LatLng(latitude, longitude) //recibe dos double
         val marker = MarkerOptions()
                 .position(coordinates)
-                .title("Mi playa fav")
+                .title(name)
                 .icon(BitmapDescriptorFactory.fromBitmap(pickupMarkerDrawable.toBitmap(pickupMarkerDrawable.intrinsicWidth, pickupMarkerDrawable.intrinsicHeight, null)))
         map.addMarker(marker) //anadiendo el marcado
 
         //animar la camara con un zoom al marcador
         map.animateCamera(
-                CameraUpdateFactory.newLatLngZoom(coordinates, 78f),
+                CameraUpdateFactory.newLatLngZoom(coordinates, 18f),
                 400,
                 null
         )
