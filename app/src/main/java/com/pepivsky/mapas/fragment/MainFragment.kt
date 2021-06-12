@@ -118,7 +118,7 @@ class MainFragment : Fragment(), OnMapReadyCallback {
                     Log.d("MainFragment", "lattitude $latitude longitude $longitude")
                     Toast.makeText(context, "Lat:$latitude Long:$longitude", Toast.LENGTH_SHORT).show()
 
-                    val token = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpYXQiOjE2MjM0ODkyOTUsImV4cCI6MTYyMzQ5Mjg5NX0.gzhPWkEPQBrpeGhrHK6oCbgwI6LPmyO3GytpJqME2RY"
+                    val token = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpYXQiOjE2MjM0OTM2NzQsImV4cCI6MTYyMzQ5NzI3NH0.e9mPCSwi9HzWGMHVElyvDOrtt7RO4aOPfNAceGxhwiw"
                     val id = "253"
                     val la = 20.176239271564697.toString()
                     val lo = (-99.32537744646021).toString()
@@ -180,17 +180,40 @@ class MainFragment : Fragment(), OnMapReadyCallback {
         //map.isMyLocationEnabled
 
         try {
-            val notariItem = listaNotarias.first()
+            /*val notariItem = listaNotarias.first()
             val name = notariItem?.name
             val notariaLat = notariItem?.latitude
             val notariaLong = notariItem?.longitude
 
-            Log.d(TAG, "onMapReady $notariItem")
+            Log.d(TAG, "onMapReady $notariItem")*/
+
+            // anadir varios markers
+                if (listaNotarias.isNotEmpty()) {
+                    listaNotarias.forEach{ markerData ->
+                        if (markerData != null) {
+                            val coordinates = LatLng(markerData.latitude, markerData.longitude)
+                            googleMap.addMarker(MarkerOptions()
+                                    .position(coordinates)
+                                    .anchor(0.5f, 0.5f)
+                                    .title(markerData.name)
+                                    .snippet("Tokio")
+                            )
+                        }
+
+                    }
+                    // hacer zoom al ultimo marcador
+                    map.animateCamera(
+                            CameraUpdateFactory.newLatLngZoom(LatLng(listaNotarias.last().latitude, listaNotarias.last().longitude), 28f),
+                            400,
+                            null
+                    )
+                }
 
 
-            createMarker(notariaLat, notariaLong, name)
+
+            //createMarker(notariaLat, notariaLong, name)
             //createMarker()
-        }catch (e: Exception) {
+        } catch (e: Exception) {
             Log.d(TAG, "e:${e.message}")
         }
 
@@ -225,7 +248,7 @@ class MainFragment : Fragment(), OnMapReadyCallback {
         val marker = MarkerOptions()
                 .position(coordinates)
                 .title(name)
-                .icon(BitmapDescriptorFactory.fromBitmap(pickupMarkerDrawable.toBitmap(pickupMarkerDrawable.intrinsicWidth, pickupMarkerDrawable.intrinsicHeight, null)))
+                //.icon(BitmapDescriptorFactory.fromBitmap(pickupMarkerDrawable.toBitmap(pickupMarkerDrawable.intrinsicWidth, pickupMarkerDrawable.intrinsicHeight, null)))
         map.addMarker(marker) //anadiendo el marcado
 
         //animar la camara con un zoom al marcador
