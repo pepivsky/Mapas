@@ -21,7 +21,7 @@ import retrofit2.converter.gson.GsonConverterFactory
 import java.util.concurrent.TimeUnit
 import kotlin.math.log2
 
-class MainActivity : AppCompatActivity(), OnMapReadyCallback { //heredar de onMapReadyCallback
+class MainActivity : AppCompatActivity() { //heredar de onMapReadyCallback
 
     companion object {
         fun getRetrofit(): Retrofit {
@@ -65,17 +65,17 @@ class MainActivity : AppCompatActivity(), OnMapReadyCallback { //heredar de onMa
         //createFragment()
 
 
-        //val address = "Francisco I Madero 135, Manzana 4, 42760 Atengo, Hgo."
+        /*//val address = "Francisco I Madero 135, Manzana 4, 42760 Atengo, Hgo."
         val address = "Calle 30A ##82a-26, Medellín, Antioquia"
         //6.232871692486546, -75.60390812744913
 
 
         val latLng = getLocationByAddress(this, address)
-        Log.i("latlong", "oncreate latLong:$latLng")
+        Log.i("latlong", "oncreate latLong:$latLng")*/
 
     }
 
-    private fun createFragment() { //metodo que crea el fragment con el mapa
+    /*private fun createFragment() { //metodo que crea el fragment con el mapa
         val mapFragment = supportFragmentManager.findFragmentById(R.id.map) as SupportMapFragment //obteniendo el fragment map del xml
 
         mapFragment.getMapAsync(this)
@@ -111,5 +111,5 @@ class MainActivity : AppCompatActivity(), OnMapReadyCallback { //heredar de onMa
             Log.e("bad address", "algo salio mal")
         }
         return null
-    }
+    }*/
 }
